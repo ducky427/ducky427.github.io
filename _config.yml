@@ -1,13 +1,12 @@
 # Site settings
-title:       Pixyll
-email:       your_email@example.com
-author:      John Otander
-description: "A simple, beautiful theme for Jekyll that emphasizes content rather than aesthetic fluff."
+title:       Programming and other Random Bits™
+author:      Ducky
+description: "My Blog"
 baseurl:     ""
-url:         "http://pixyll.com"
+url:         "http://blog.ducky.io"
 
 # Google analytics
-google_analytics:
+google_analytics: UA-42115942-1
 
 # Optional features
 animated:           false
@@ -16,13 +15,13 @@ show_post_footers:  false
 
 # Disqus post comments
 # (leave blank to disable Disqus)
-disqus_shortname:
+disqus_shortname: duckyblog
 
 # Social icons
-show_social_icons: false
-github_username:
-stackoverflow_id:
-twitter_username:
+show_social_icons: true
+github_username: ducky427
+stackoverflow_id: 1224343
+twitter_username: ducky427
 google_plus_id:
 linkedin_username:
 angellist_username:
@@ -35,14 +34,14 @@ show_sharing_icons: false
 share_text: 'Share this post!'
 # Change to 'true' to enable individual icons
 share_facebook: false
-share_twitter: false
+share_twitter: true
 share_googleplus: false
 share_linkedin: false
 share_digg: false
 share_tumblr: false
-share_reddit: false
+share_reddit: true
 share_stumbleupon: false
-share_hackernews: false
+share_hackernews: true
 
 # Build settings
 markdown:     redcarpet

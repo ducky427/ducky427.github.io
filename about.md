@@ -1,15 +1,16 @@
 ---
 layout: page
-title: About me
+title: About
 permalink: /about/
+tags: about
 ---
 
-WIP.
+WIP
 
 Thanks to the following:
 
+* [Pixyll](https://github.com/johnotander/pixyll)
 * [BASSCSS](http://basscss.com)
 * [Jekyll](http://jekyllrb.com)
 * [Refills](http://refills.bourbon.io/)
-* [Solarized](http://ethanschoonover.com/solarized)
-* [Pixll](https://github.com/johnotander/pixyll)
+* [Type Scale](http://type-scale.com/)

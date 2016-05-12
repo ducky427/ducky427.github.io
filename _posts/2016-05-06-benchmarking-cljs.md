@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Mirco-benchmarking Clojurescipt code in a browser"
+title: "Micro-benchmarking Clojurescipt code in a browser"
 date: 2016-05-06 12:45
 disqus: y
 categories: clojurescript

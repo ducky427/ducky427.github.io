@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Dynamic children in a Reagent component"
-date: 2016-05-11 12:45
+date: 2016-05-11 15:45
 disqus: y
 categories: clojurescript reagent
 ---
@@ -62,3 +62,5 @@ Aside, the following two Reagent components are exactly the same thing:
 {% endhighlight %}
 
 Reagent when creating the React component checks if the metadata has a key called `key` and if so it adds it to the components `props`. More [here](https://github.com/reagent-project/reagent/blob/master/src/reagent/impl/template.cljs#L269).
+
+[Mike Thompson](https://twitter.com/wazound) has a great answer on [Stack Overflow](https://stackoverflow.com/questions/37164091/how-do-i-loop-through-a-subscribed-collection-in-re-frame-and-display-the-data-a/37186230#37186230) about the need for a `key` and different strategies to create children with/without keys.

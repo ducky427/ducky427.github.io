@@ -7,7 +7,7 @@ categories: clojurescript
 ---
 <link rel="stylesheet" type="text/css" href="http://app.klipse.tech/css/codemirror.css">
 
-> TL;DR - Using a protocol via `apply` in performance sensitive code is not a good idea.
+> TL;DR - Using `apply` in performance sensitive code is not a good idea.
 
 Building on the last blog post on [`deftype` and `defrecord`](/clojurescript/2016/05/12/deftype-defmethod-cljs/), I decided to investigate more about `defprotocol`. Whereas `deftype` and `defrecord` can be thought of as "bags of data", `defprotocol` defines beaviour for those.
 
@@ -48,7 +48,9 @@ Also `(bar-me (Foo.) 1)` generates `bar_me.cljs$core$IFn$_invoke$arity$2((Foo.),
 
  Whoaa! ClojureScript compiler already knows the number of appropriate arguments to the `bar-me` function. So it emits a direct call to the function 2 from above without going through function 1. This is counter to the claim made by toxi.
 
-The only circumstance where the claim is valid is when the compiler does not know the number of arguments passed i.e. the number of arguments is dynamic. This happens if `bar-me` is used via `apply`. So the combination of apply and protocols is going to be slow. How slow, lets find out below.
+The only circumstance where the claim may be valid is when the compiler does not know the number of arguments passed i.e. the number of arguments is dynamic. This happens if `bar-me` is used via `apply`.
+
+How slow, lets find out below.
 
 ## Benchmarks
 
@@ -89,11 +91,13 @@ All benchmarks were run on Mac OS X in Safari Technical Preview [Version 9.1.1 (
 | `bar-me` 2 arity via apply  | 4.10717624610265E-07  | 448x        |
 
 
-As suspected calling multi-arity protocols is no different from calling simple protocols if done directly. But boy, is `apply` expensive for protocols.
+As suspected calling multi-arity protocols is no different from calling simple protocols if done directly. But boy, is `apply` expensive.
 
 Also the timing difference between calling `baz` and `foo` gives us cost of using protocols. Its the cost associated with checking if the datatype is not null and checking if the appropriate method exists on the datatype.
 
 Till next time!
+
+**Edit** - [David Nolen](https://twitter.com/swannodette) mentioned on [Clojurians Slack](clojurians.net) that the performance degradation has everything to do with `apply` and almost nothing to do with protocols. So I've modified this post accordingly.
 
 <script>
     window.klipse_settings = {

@@ -5,6 +5,7 @@ date: 2016-06-08 17:29
 disqus: y
 categories: clojurescript
 ---
+<link rel="stylesheet" type="text/css" href="http://app.klipse.tech/css/codemirror.css">
 
 > TL;DR - Using a protocol via `apply` in performance sensitive code is not a good idea.
 
@@ -23,9 +24,9 @@ hmmm.... I decided to investigate this claim.
 
 ## Down the rabbit hole
 
-Code below creates a simple protocol and deftype. We'll first examine the javascript generated and then benchmark it.
+Code below creates a simple protocol and deftype. We'll first examine the javascript generated and then benchmark it. Feel free to skip past the generated javascript.
 
-{% highlight clojure %}
+<pre><code class="klipse-js" data-static-fns="true">
 (defprotocol P
   (foo [this a])
   (bar-me [this a] [this a b]))
@@ -35,134 +36,7 @@ Code below creates a simple protocol and deftype. We'll first examine the javasc
   (foo [this a] 1)
   (bar-me [this a] 1)
   (bar-me [this a b] 1))
-{% endhighlight %}
-
-It generates the following javascript (feel free to skip this section):
-
-{% highlight javascript %}
-/**
- * @interface
- */
-bench.core.P = function() {};
-
-bench.core.foo = (function bench$core$foo(this$, a) {
-    if ((!((this$ == null))) && (!((this$.bench$core$P$foo$arity$2 == null)))) {
-        return this$.bench$core$P$foo$arity$2(this$, a);
-    } else {
-        var x__19136__auto__ = (((this$ == null)) ? null : this$);
-        var m__19137__auto__ = (bench.core.foo[goog.typeOf(x__19136__auto__)]);
-        if (!((m__19137__auto__ == null))) {
-            return (m__19137__auto__.cljs$core$IFn$_invoke$arity$2 ? m__19137__auto__.cljs$core$IFn$_invoke$arity$2(this$, a) : m__19137__auto__.call(null, this$, a));
-        } else {
-            var m__19137__auto____$1 = (bench.core.foo["_"]);
-            if (!((m__19137__auto____$1 == null))) {
-                return (m__19137__auto____$1.cljs$core$IFn$_invoke$arity$2 ? m__19137__auto____$1.cljs$core$IFn$_invoke$arity$2(this$, a) : m__19137__auto____$1.call(null, this$, a));
-            } else {
-                throw cljs.core.missing_protocol("P.foo", this$);
-            }
-        }
-    }
-});
-
-bench.core.bar_me = (function bench$core$bar_me(var_args) {
-    var args28030 = [];
-    var len__19548__auto___28033 = arguments.length;
-    var i__19549__auto___28034 = (0);
-    while (true) {
-        if ((i__19549__auto___28034 < len__19548__auto___28033)) {
-            args28030.push((arguments[i__19549__auto___28034]));
-
-            var G__28035 = (i__19549__auto___28034 + (1));
-            i__19549__auto___28034 = G__28035;
-            continue;
-        } else {}
-        break;
-    }
-
-    var G__28032 = args28030.length;
-    switch (G__28032) {
-        case 2:
-            return bench.core.bar_me.cljs$core$IFn$_invoke$arity$2((arguments[(0)]), (arguments[(1)]));
-
-            break;
-        case 3:
-            return bench.core.bar_me.cljs$core$IFn$_invoke$arity$3((arguments[(0)]), (arguments[(1)]), (arguments[(2)]));
-
-            break;
-        default:
-            throw (new Error([cljs.core.str("Invalid arity: "), cljs.core.str(args28030.length)].join('')));
-
-    }
-});
-
-bench.core.bar_me.cljs$core$IFn$_invoke$arity$2 = (function(this$, a) {
-    if ((!((this$ == null))) && (!((this$.bench$core$P$bar_me$arity$2 == null)))) {
-        return this$.bench$core$P$bar_me$arity$2(this$, a);
-    } else {
-        var x__19136__auto__ = (((this$ == null)) ? null : this$);
-        var m__19137__auto__ = (bench.core.bar_me[goog.typeOf(x__19136__auto__)]);
-        if (!((m__19137__auto__ == null))) {
-            return (m__19137__auto__.cljs$core$IFn$_invoke$arity$2 ? m__19137__auto__.cljs$core$IFn$_invoke$arity$2(this$, a) : m__19137__auto__.call(null, this$, a));
-        } else {
-            var m__19137__auto____$1 = (bench.core.bar_me["_"]);
-            if (!((m__19137__auto____$1 == null))) {
-                return (m__19137__auto____$1.cljs$core$IFn$_invoke$arity$2 ? m__19137__auto____$1.cljs$core$IFn$_invoke$arity$2(this$, a) : m__19137__auto____$1.call(null, this$, a));
-            } else {
-                throw cljs.core.missing_protocol("P.bar-me", this$);
-            }
-        }
-    }
-});
-
-bench.core.bar_me.cljs$core$IFn$_invoke$arity$3 = (function(this$, a, b) {
-    if ((!((this$ == null))) && (!((this$.bench$core$P$bar_me$arity$3 == null)))) {
-        return this$.bench$core$P$bar_me$arity$3(this$, a, b);
-    } else {
-        var x__19136__auto__ = (((this$ == null)) ? null : this$);
-        var m__19137__auto__ = (bench.core.bar_me[goog.typeOf(x__19136__auto__)]);
-        if (!((m__19137__auto__ == null))) {
-            return (m__19137__auto__.cljs$core$IFn$_invoke$arity$3 ? m__19137__auto__.cljs$core$IFn$_invoke$arity$3(this$, a, b) : m__19137__auto__.call(null, this$, a, b));
-        } else {
-            var m__19137__auto____$1 = (bench.core.bar_me["_"]);
-            if (!((m__19137__auto____$1 == null))) {
-                return (m__19137__auto____$1.cljs$core$IFn$_invoke$arity$3 ? m__19137__auto____$1.cljs$core$IFn$_invoke$arity$3(this$, a, b) : m__19137__auto____$1.call(null, this$, a, b));
-            } else {
-                throw cljs.core.missing_protocol("P.bar-me", this$);
-            }
-        }
-    }
-});
-
-bench.core.bar_me.cljs$lang$maxFixedArity = 3;
-
-
-
-/**
- * @constructor
- * @implements {bench.core.P}
- */
-bench.core.Foo = (function() {})
-bench.core.Foo.prototype.bench$core$P$ = true;
-
-bench.core.Foo.prototype.bench$core$P$foo$arity$2 = (function(this$, a) {
-    var self__ = this;
-    var this$__$1 = this;
-    return (1);
-});
-
-bench.core.Foo.prototype.bench$core$P$bar_me$arity$2 = (function(this$, a) {
-    var self__ = this;
-    var this$__$1 = this;
-    return (1);
-});
-
-bench.core.Foo.prototype.bench$core$P$bar_me$arity$3 = (function(this$, a, b) {
-    var self__ = this;
-    var this$__$1 = this;
-    return (1);
-});
-
-{% endhighlight %}
+</code></pre>
 
 Its quite a bit of generated code, but the important javascript functions relating to the protocol `P` are:
 
@@ -178,7 +52,7 @@ The only circumstance where the claim is valid is when the compiler does not kno
 
 ## Benchmarks
 
-Before I benchmark the protocols, I decided to set the base case to be - by explictly attaching a function to `Foo`'s prototype.
+Before I benchmark the protocols, I decided to set the base case to be - by explictly attaching a function `baz` to `Foo`'s prototype.
 
 {% highlight clojure %}
 (set! (.. Foo -prototype -baz)
@@ -220,3 +94,11 @@ As suspected calling multi-arity protocols is no different from calling simple p
 Also the timing difference between calling `baz` and `foo` gives us cost of using protocols. Its the cost associated with checking if the datatype is not null and checking if the appropriate method exists on the datatype.
 
 Till next time!
+
+<script>
+    window.klipse_settings = {
+        selector: '.klipse-clojure',
+        selector_js: '.klipse-js'
+    };
+</script>
+<script src="http://app.klipse.tech/plugin/js/klipse_plugin.js"></script>

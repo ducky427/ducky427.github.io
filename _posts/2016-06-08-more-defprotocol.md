@@ -97,7 +97,7 @@ Also the timing difference between calling `baz` and `foo` gives us cost of usin
 
 Till next time!
 
-**Edit** - [David Nolen](https://twitter.com/swannodette) mentioned on [Clojurians Slack](clojurians.net) that the performance degradation has everything to do with `apply` and almost nothing to do with protocols. So I've modified this post accordingly.
+**Edit** - [David Nolen](https://twitter.com/swannodette) mentioned on [Clojurians Slack](https://clojurians.net) that the performance degradation has everything to do with `apply` and almost nothing to do with protocols. So I've modified this post accordingly.
 
 <script>
     window.klipse_settings = {

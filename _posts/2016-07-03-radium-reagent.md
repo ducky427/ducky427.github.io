@@ -53,6 +53,8 @@ Below is a simple example of using Radium with Reagent
 
 This example shows how easy is to use the `hover` css property in a React component. To do with with plain React or Reagent, isn't trivial without resorting to a CSS file.
 
+The key thing is that I converted a Reagent button component to a React component (using `reagent/reactify-component`), then passed it through Radium and then converted it back to something which I consume in reagent (using `reagent/adapt-react-class`).
+
 This example is also in a GitHub repository [here](https://github.com/ducky427/rera).
 
 Till next time!

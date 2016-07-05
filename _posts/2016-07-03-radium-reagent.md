@@ -5,7 +5,7 @@ date: 2016-07-04 10:15
 disqus: y
 categories: clojurescript reagent
 ---
-I came across [this](https://stackoverflow.com/questions/32355688/why-radium-doesnt-work-with-reagent-clojurescript/38183679#38183679) StackOverflow question regarding [Radium]() with [Reagent](https://github.com/reagent-project/reagent).
+I came across [this](https://stackoverflow.com/questions/32355688/why-radium-doesnt-work-with-reagent-clojurescript/38183679#38183679) StackOverflow question regarding [Radium](http://stack.formidable.com/radium/) with [Reagent](https://github.com/reagent-project/reagent).
 
 > Radium is a set of tools to manage inline styles on React elements. It gives you powerful styling capabilities without CSS.
 > Inspired by [React: CSS in JS](https://speakerdeck.com/vjeux/react-css-in-js) by [vjeux](https://twitter.com/Vjeux).

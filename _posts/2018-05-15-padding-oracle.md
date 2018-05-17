@@ -6,7 +6,7 @@ disqus: y
 categories: cryptography
 ---
 <script type="text/javascript"
-    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
 
 While working on the excellent [CryptoPals](https://cryptopals.com/) challenges, I came across the [Padding Oracle Attack](https://en.wikipedia.org/wiki/Padding_oracle_attack).

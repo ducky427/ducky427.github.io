@@ -132,15 +132,15 @@ By construction, we have just guessed the value of the last byte of \\( C_1 \\).
 
 We can now work backwards to construct a new \\( C'_0 \\)  to target a padding of `02 02` in the end state, then `03 03 03` etc. to decipher the whole block \\( C_1 \\).
 
-It took us only \\( m \cdot 256 \\) guesses at worst to decipher a cipher text block of size \\( m \\) without knowing the key. If we were to break the key by brute force, it would take \\( 256 ^ m \\) guesses. We didn't need to break the key to get the plain text!
+It took us only \\( m \cdot 256 \\) guesses at worst to decipher a cipher text block of size \\( m \\) without knowing the key. If we were to break the key by brute force, it would take \\( 256 ^ m \\) guesses. We didn't need to break the secret key to get to the plain text.
 
 Why did this happen?
 
-It happened because the attacker was able to deduce what is a padding failure and what is not.
+It happened because the attacker was able to deduce what is a padding failure and what is not. It was also able to bombard the padding oracle with many requests.
 
 In case of a data encryption/decryption error, we should be returning a generic error and not a specific error.
 
-Additionally we should not be decrypting any data we can't verify in the sense did the sender mean to send this exact message. So we should be sending a [MAC](https://en.wikipedia.org/wiki/Message_authentication_code) along with the cipher text and we should only be trying to decrypt after validating the MAC.
+Additionally we should not be decrypting any data we can't verify first, in the sense did the sender mean to send this exact message or not. So we should be sending a [MAC](https://en.wikipedia.org/wiki/Message_authentication_code) along with the cipher text and we should only be trying to decrypt after validating the MAC.
 
 Till next time!
 

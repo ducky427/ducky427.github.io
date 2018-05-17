@@ -75,7 +75,9 @@ Therefore, the padding is constructed in such a way that when the text is decryp
 
 For us the interesting thing to notice is that we can influence a decrypted block of plain text, by manipulating the previous cipher text block. This doesn't mean that we can break the said previous cipher text block.
 
-A padding oracle is a function when given ciphertext, decrypts it and checks if the padding on the decrypted text is valid or not. This function is useful because if padding isn't correct, the decrypted text is certainly corrupted. We don't need to leak this extra information about the padding to the user. But sometimes it does happen. Padding oracles have been found in many web frameworks including Ruby on Rails, Java ServerFaces and ASP.NET. An example of a padding oracle in Java is the exception `javax.crypto.BadPaddingException` with the message `Given final block not
+A padding oracle is a function when given ciphertext, decrypts it and checks if the padding on the decrypted text is valid or not. This function is useful because if padding isn't correct, the decrypted text is certainly corrupted. We don't need to leak this extra information about the padding to the user. But sometimes it does happen.
+
+Padding oracles have been found in many web frameworks including Ruby on Rails, Java ServerFaces and ASP.NET. An example of a padding oracle in Java is the exception `javax.crypto.BadPaddingException` with the message `Given final block not
 properly padded`. Some more padding oracles can be found in [this paper](https://www.usenix.org/legacy/event/woot10/tech/full_papers/Rizzo.pdf).
 
 Let's work an actual example before we formalise what we are doing.

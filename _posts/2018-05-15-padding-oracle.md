@@ -67,14 +67,46 @@ While using a block cipher mode, we require that the plain text be of a size whi
 etc.
 {% endhighlight %}
 
+If the text is already a multiple of block length, we still pad it with 16 16's. This enables us to remove ambiguity.
+
+Therefore, the padding is constructed in such a way that when the text is decrypted, we check the value of the last byte, make sure that that many preceding bytes have the same value and then discard them.
 
 ## The Attack
 
 For us the interesting thing to notice is that we can influence a decrypted block of plain text, by manipulating the previous cipher text block. This doesn't mean that we can break the said previous cipher text block.
 
-A padding oracle is a function when given ciphertext, decrypts it and checks if the padding on the decrypted text is valid or not. This function is useful because if padding isn't correct, the decrypted text is certainly corrupted. We don't need to leak this extra information about the padding to the user. But sometimes it does happen.
+A padding oracle is a function when given ciphertext, decrypts it and checks if the padding on the decrypted text is valid or not. This function is useful because if padding isn't correct, the decrypted text is certainly corrupted. We don't need to leak this extra information about the padding to the user. But sometimes it does happen. Padding oracles have been found in many web frameworks including Ruby on Rails, Java ServerFaces and ASP.NET. An example of a padding oracle in Java is the exception `javax.crypto.BadPaddingException` with the message `Given final block not
+properly padded`. Some more padding oracles can be found in [this paper](https://www.usenix.org/legacy/event/woot10/tech/full_papers/Rizzo.pdf).
 
-Back to our attack, given the ciphertext, \\( [C_0, C_1, \cdots, C_N] \\), lets say we want to recover the plaintext, \\( P_1 \\) from ciphertext \\( C_1 \\). We will achieve this by guessing the last byte of the message, then the second last byte and so on.
+Let's work an actual example before we formalise what we are doing.
+
+We will AES with a block and key size of 128 bits as our block cipher algorithm.
+
+- Let the shared key be `YELLOW SUBMARINE` which when represented as bytes is `[89, 69, 76, 76, 79, 87, 32, 83, 85, 66, 77, 65, 82, 73, 78, 69]`. Notice that the key is 16 bytes or 128 bits long. In real life, please make sure that your key is generated using a cryptographically secure random number generator.
+
+- Let for the sake of this example Initialisation Vector be `[48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48]`. Again in reality this should be generated using a cryptographically secure random number generator.
+
+- Let the plain text be `Here comes the sun (doo doo doo doo).` which in bytes is `[72, 101, 114, 101, 32, 99, 111, 109, 101, 115, 32, 116, 104, 101, 32, 115, 117, 110, 32, 40, 100, 111, 111, 32, 100, 111, 111, 32, 100, 111, 111, 32, 100, 111, 111, 41, 46]`. The plain text is of length 37 but we require it to be a multiple of 16. So we adding a padding of 11 to it. So the plain text is now `[72, 101, 114, 101, 32, 99, 111, 109, 101, 115, 32, 116, 104, 101, 32, 115, 117, 110, 32, 40, 100, 111, 111, 32, 100, 111, 111, 32, 100, 111, 111, 32, 100, 111, 111, 41, 46, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11]`.
+
+- When encrypted using the key and I.V., we get a cipher text of `[210, 182, 226, 53, 98, 183, 56, 39, 223, 19, 26, 253, 41, 22, 252, 111, 224, 230, 163, 75, 150, 93, 81, 242, 114, 80, 192, 153, 192, 19, 97, 251, 224, 107, 139, 11, 85, 141, 183, 227, 159, 180, 155, 249, 196, 225, 248, 13]`.
+
+- We will focus on the 1st and the 2nd blocks of the cipher text. This is available to the attacker. Our intention will be to get the last byte of 2nd block of the corresponding plain text (which is 32). We will do this modifying the last byte of the 1st block. The value of last byte of 1st block is 111. Let modify the last byte of the 1st encypted block be its original value xor'ed with 1 and with 0. So, \\( 111 \oplus 1 \oplus 0 = 110\\).
+
+- Lets just consider the modified first ciphertext block and the original second ciphertext block as a complete message and then send it to the padding oracle. 2nd block when AES decrypted is `[167, 216, 194, 29, 6, 216, 87, 7, 187, 124, 117, 221, 77, 121, 147, 79]`. So in CBC mode, the last byte will be \\( 79 \oplus 110 = 33\\). So the oracle will see 33 as the last byte but it isn't a valid padding. So it will return a false.
+
+- Lets change the last byte of the 1st block of ciphertext to be \\( 111 \oplus 1 \oplus 1 = 111 \\).
+
+- Now the padding oracle will see \\( 79 \oplus 111 = 32 \\) as the last byte which is again not a valid padding and so it will return false.
+
+- Essentially we keep on incrementing \\( x \\) in \\( 111 \oplus 1 \oplus x \\) till the padding oracle returns true.
+
+- We find for \\( x = 32\\), \\( 111 \oplus 1 \oplus 32 = 78\\) and \\( 79 \oplus 78 = 1\\). So for this value of x, the padding oracle will return true. Notice that x has the same value as the last byte of the 2nd plaintext block for which the oracle returned true. This is not an accident!
+
+(This is almost always true. There is a corner case discussed later.)
+
+Lets try to understand what is happening.
+
+Given the ciphertext, \\( [C_0, C_1, \cdots, C_N] \\), lets say we want to recover the plaintext, \\( P_1 \\) from ciphertext \\( C_1 \\). We will achieve this by guessing the last byte of the message, then the second last byte and so on.
 
 Let's focus on the message comprising of just \\( [C_0, C_1] \\).
 
@@ -84,15 +116,15 @@ $$P_1 = D_K(C_1) \oplus C_0$$
 
 $${P'}_1 = D_K(C_1) \oplus {C'}_0 $$
 
-Substituting \\( C' \\) and only focussing on the last byte, we get,
+Substituting \\( C' \\) and only focusing on the last byte, we get,
 
 $${p'}_m = p_m \oplus x \oplus 1$$
 
 If the function says that this is not a valid padding, we simply increment \\( x \\).
 
-We keep on doing this, till the function returns a true value. At worst, we've tried the oracle 256 times at worst (all possibilites for a byte) and we will get atleast one true value.
+We keep on doing this, till the function returns a true value. At worst, we've tried the oracle 256 times at worst (all possibilities for a byte) and we will get at least one true value.
 
-An important property of the xor function is that \\( x \oplus x = 0 \\). So if \\( p_m = x \\), then the value of \\( {p'}_m \\) will be \\( 1 \\) which is a valid ending padding value and the padding oracle would return true for a valid padding for \\( [C_0, C_1] \\) as such!! So there is atleast one value of \\( x \\) for which the padding oracle would return true.
+An important property of the xor function is that \\( x \oplus x = 0 \\). So if \\( p_m = x \\), then the value of \\( {p'}_m \\) will be \\( 1 \\) which is a valid ending padding value and the padding oracle would return true for a valid padding for \\( [C_0, C_1] \\) as such!! So there is at least one value of \\( x \\) for which the padding oracle would return true.
 
 There is a corner case that the padding oracle can return true for more than one value of \\( x \\). See [Stack Overflow](https://crypto.stackexchange.com/questions/40800/is-the-padding-oracle-attack-deterministic) for details on how to break this.
 

@@ -82,9 +82,9 @@ properly padded`. Some more padding oracles can be found in [this paper](https:/
 
 Let's work an actual example before we formalise what we are doing.
 
-We will AES with a block and key size of 128 bits as our block cipher algorithm.
+Let's use AES as our block cipher algorithm with a block and key size of 128 bits or 16 bytes.
 
-- Let the shared key be `YELLOW SUBMARINE` which when represented as bytes is `[89, 69, 76, 76, 79, 87, 32, 83, 85, 66, 77, 65, 82, 73, 78, 69]`. Notice that the key is 16 bytes or 128 bits long. In real life, please make sure that your key is generated using a cryptographically secure random number generator.
+- Let the shared key be `YELLOW SUBMARINE` which when represented as bytes is `[89, 69, 76, 76, 79, 87, 32, 83, 85, 66, 77, 65, 82, 73, 78, 69]`. Notice that the key is 16 bytes. In real life, please make sure that your key is generated using a cryptographically secure random number generator.
 
 - Let for the sake of this example Initialisation Vector be `[48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48]`. Again in reality this should be generated using a cryptographically secure random number generator.
 

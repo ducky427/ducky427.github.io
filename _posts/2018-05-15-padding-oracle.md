@@ -102,9 +102,7 @@ Let's use AES as our block cipher algorithm with a block and key size of 128 bit
 
 - Essentially we keep on incrementing \\( x \\) in \\( 111 \oplus 1 \oplus x \\) till the padding oracle returns true.
 
-- We find for \\( x = 32\\), \\( 111 \oplus 1 \oplus 32 = 78\\) and \\( 79 \oplus 78 = 1\\). So for this value of x, the padding oracle will return true. Notice that x has the same value as the last byte of the 2nd plain text block for which the oracle returned true. This is not an accident!
-
-(This is almost always true. There is a corner case discussed later.)
+- We find for \\( x = 32\\), \\( 111 \oplus 1 \oplus 32 = 78\\) and \\( 79 \oplus 78 = 1\\). So for this value of x, the padding oracle will return true as `1` is a valid padding ending. Notice that x has the same value as the last byte of the 2nd plain text block for which the oracle returned true. This is not an accident! (This is almost always true. There is a corner case discussed later.)
 
 Lets try to understand what is happening.
 
